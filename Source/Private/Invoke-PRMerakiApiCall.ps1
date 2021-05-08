@@ -13,7 +13,7 @@ function Invoke-PRMerakiApiCall {
 
     begin {
         Write-Verbose -Message "Setting the API Key $($ApiKey) as a Script Varaible"
-        Set-Variable -Name $ApiKey -Value $apiKey -Scope Script
+        New-Variable -Name ApiKey -Value $ApiKey -Scope Script -Force
         
         $baseUrl = "https://api.meraki.com/api/v1/"
         Write-Verbose -Message "Setting the base url: "
