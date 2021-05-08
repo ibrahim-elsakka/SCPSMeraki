@@ -1,9 +1,14 @@
 ### --- PUBLIC FUNCTIONS --- ###
 #Region - Get-SCMrkNetworks.ps1
 function Get-SCMrkNetworks {
-
+    [CmdletBinding()]
+    [Alias('scgn')]
     param (
+        [Parameter(Mandatory=$false, valueFromPipeline=$true)]
+        [ValidateNotNullOrEmpty()]
         [String]$OrgId = $OrgId,
+        [Parameter(Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
         [String]$ApiKey = $ApiKey
     )
 
@@ -29,7 +34,7 @@ function Get-SCMrkNetworks {
         }
     }
 }
-Export-ModuleMember -Function Get-SCMrkNetworks
+Export-ModuleMember -Function Get-SCMrkNetworks -Alias 'scgn'
 #EndRegion - Get-SCMrkNetworks.ps1
 #Region - Set-SCMrkAuth.ps1
 function Set-SCMrkAuth {
