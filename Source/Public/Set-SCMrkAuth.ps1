@@ -30,6 +30,8 @@ function Set-SCMrkAuth {
         System.String[] - The cmdlet returns a string with successfull statement, if connection was successfull
     .NOTES
         n/a
+    .Link
+        Online Help: https://scriptingchris.tech
     #>
 
     [CmdletBinding()]

@@ -14,12 +14,19 @@ function Get-SCMrkDevice {
 
         This example will grap the serial through the pipeline and return an PS Object of the
         specified device.
+    .PARAMETER Serial
+        The Serial number for a specific Cisco Meraki device.
+    .PARAMETER ApiKey
+        ApiKey for Meraki Dashboard. Check following Meraki Docs to see how to get a Dashboard API Key:
+        https://documentation.meraki.com/General_Administration/Other_Topics/Cisco_Meraki_Dashboard_API#:~:text=For%20access%20to%20the%20API,to%20generate%20an%20API%20key.
     .INPUTS
         System.String[] - You can pipe the Serial into the cmdlet
     .OUTPUTS
         System.Object[] - This cmdlet will output a PS Object with data on the specific device.
     .NOTES
         n/a
+    .Link
+        Online Help: https://scriptingchris.tech
     #>
 
     [CmdletBinding()]

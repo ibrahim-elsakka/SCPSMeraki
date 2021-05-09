@@ -23,6 +23,8 @@ function Get-SCMrkClient {
         System.Object[] - This cmdlet will output a PS Object with data on the specific client defined.
     .NOTES
         n/a
+    .Link
+        Online Help: https://scriptingchris.tech
     #>
 
     [CmdletBinding()]

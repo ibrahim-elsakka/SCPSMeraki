@@ -28,6 +28,8 @@ function Get-SCMrkNetworks {
         System.Array[] - The cmdlet will output an PS Object with an array of all the networks.
     .NOTES
         n/a
+    .Link
+        Online Help: https://scriptingchris.tech
     #>
 
     [CmdletBinding()]
