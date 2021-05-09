@@ -260,7 +260,8 @@ task Build -if($Configuration -eq "Release"){
     catch {
         throw "Failed importing the module: $($ModuleName)"
     }
-    if(!(Get-ChildItem -Path ".\Docs")) {
+    #Todo need to fix why help documents are not beeing updated!
+    if(!(Test-Path -Path ".\Docs")) {
         If(Get-Module -Name $ModuleName) {
             New-MarkdownHelp -Module $ModuleName -OutputFolder ".\Docs"
             New-ExternalHelp ".\Docs" -OutputPath ".\Output\$($ModuleName)\$($ModuleVersion)\en-US\"

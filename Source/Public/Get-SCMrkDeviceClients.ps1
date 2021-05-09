@@ -24,7 +24,7 @@ function Get-SCMrkDeviceClients {
     .OUTPUTS
         System.Array - The cmdlet will output an PS Object with an array of all the clients associated to a specific device.
     .NOTES
-        n/a
+        Meraki API Docs: https://developer.cisco.com/meraki/api-v1/#!get-device-clients
     .Link
         Online Help: https://scriptingchris.tech
     #>

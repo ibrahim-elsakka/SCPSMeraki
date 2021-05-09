@@ -25,7 +25,7 @@ function Get-SCMrkDevices {
     .OUTPUTS
         System.Array[] - The cmdlet will output an PS Object with an array of all the devices on the network.
     .NOTES
-        n/a
+        Meraki API Docs: https://developer.cisco.com/meraki/api-v1/#!get-network-devices
     .Link
         Online Help: https://scriptingchris.tech
     #>

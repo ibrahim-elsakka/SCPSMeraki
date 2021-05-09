@@ -1,19 +1,18 @@
-function Get-SCMrkDevice {
+function Get-SCMrkSwitchPorts {
     <#
     .SYNOPSIS
-        Cmdlet for retriving information on a specific Meraki device
+        Cmdlet for retriving all Switch ports from a Meraki switch
     .DESCRIPTION
-        Cmdlet which will retrieve a PS Object of information on a specific Meraki Device
+        Cmdlet which retrieves configuration data on all switch ports of a Meraki Switch.
     .EXAMPLE
-        PS C:\> Get-SCMrkDevice -Serial "<serial_number>"
+        PS C:\> Get-SCMrkSwitchPorts -Serial "<serial_number>"
 
-        This example will retrieve a PS Object of the device specified by the serial number
-        provided in the parameter -Serial
+        This example will retrieve data from all ports on a Meraki Switch.
     .EXAMPLE
-        (Get-SCMrkDevices -Id "<network_id>" | ? Name -eq "Device1").Serial | Get-SCMrkDevice
+        PS C:\> (Get-SCMrkDevices -Id "<network_id>" | ? Name -eq "Device1").Serial | Get-SCMrkSwitchPorts
 
-        This example will grap the serial through the pipeline and return an PS Object of the
-        specified device.
+        This example will grap the Meraki Switch Serial number and pipe it into the cmdlet, to retrieve data
+        on all the Meraki switch ports.
     .PARAMETER Serial
         The Serial number for a specific Cisco Meraki device.
     .PARAMETER ApiKey
@@ -24,8 +23,8 @@ function Get-SCMrkDevice {
     .OUTPUTS
         System.Object[] - This cmdlet will output a PS Object with data on the specific device.
     .NOTES
-        Meraki API Docs: https://developer.cisco.com/meraki/api-v1/#!get-device
-    .Link
+        Meraki API Docs: https://developer.cisco.com/meraki/api-v1/#!get-device-switch-ports
+    .LINK
         Online Help: https://scriptingchris.tech
     #>
 
@@ -40,13 +39,13 @@ function Get-SCMrkDevice {
     )
 
     Begin {
-        Write-Verbose -Message "Initiating retrieval of all device: $($Serial)"
+        Write-Verbose -Message "Initiating retrieval of Switch ports of switch: $($Serial)"
     }
 
     Process {
         try {
-            Write-Verbose -Message "Retrieving Meraki Device"
-            $result = Invoke-PRMerakiApiCall -Method GET -Resource "/devices/$($Serial)" -ApiKey $ApiKey
+            Write-Verbose -Message "Retrieving Meraki Switch Ports"
+            $result = Invoke-PRMerakiApiCall -Method GET -Resource "/devices/$($Serial)/switch/ports" -ApiKey $ApiKey
             Write-Output -InputObject $result
         }
         catch {

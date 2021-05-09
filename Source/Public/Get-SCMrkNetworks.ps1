@@ -27,7 +27,7 @@ function Get-SCMrkNetworks {
     .OUTPUTS
         System.Array[] - The cmdlet will output an PS Object with an array of all the networks.
     .NOTES
-        n/a
+        Meraki API Docs: https://developer.cisco.com/meraki/api-v1/#!get-organization-networks
     .Link
         Online Help: https://scriptingchris.tech
     #>

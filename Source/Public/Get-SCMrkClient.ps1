@@ -22,7 +22,7 @@ function Get-SCMrkClient {
     .OUTPUTS
         System.Object[] - This cmdlet will output a PS Object with data on the specific client defined.
     .NOTES
-        n/a
+        Meraki API Docs: https://developer.cisco.com/meraki/api-v1/#!get-network-client
     .Link
         Online Help: https://scriptingchris.tech
     #>
