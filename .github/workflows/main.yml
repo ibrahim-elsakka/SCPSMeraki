@@ -29,7 +29,7 @@ jobs:
           
       - name: Invoke-Build build script
         shell: pwsh
-        run: pwsh -command "Get-ChildItem ./"
+        run: pwsh -command "Get-ChildItem ./main/"
       
       - name: Set required PowerShell modules
         id: psmodulecache
