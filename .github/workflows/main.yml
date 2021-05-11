@@ -24,6 +24,8 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+        with:
+          path: main
       
       - name: Set required PowerShell modules
         id: psmodulecache
@@ -63,4 +65,4 @@ jobs:
           # Artifact name (download all artifacts in not specified)
           name: module-artifact
           # Artifact unpack location
-          path: ${{GITHUB_WORKSPACE}}/Output/
+          path: $GITHUB_WORKSPACE/Output/
