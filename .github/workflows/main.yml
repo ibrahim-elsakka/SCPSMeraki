@@ -43,9 +43,8 @@ jobs:
             Set-PSRepository PSGallery -InstallationPolicy Trusted
             Install-Module ${{ steps.psmodulecache.outputs.needed }} -ErrorAction Stop
             
-      - name: Run a multi-line PowerShell script
-        if: github.event.action == 'inline'
-        run: |
-          if(Get-Module -Name InvokeBuild){Write-Output "Works"};
+      - name: Invoke-Build build script
+        if: github.event.action == 'script'
+        run: pwsh -command "Invoke-Build -File ./$GITHUB_WORKSPACE\build.ps1 -Configuration 'Release' -ExportAlias"
 
         
