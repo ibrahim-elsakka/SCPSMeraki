@@ -26,7 +26,6 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Run a multi-line PowerShell script
-        if: github.event.action == 'inline'
         run: |
             Install-Module -Name InvokeBuild;
             Import-Module -Name InvokeBuild;
