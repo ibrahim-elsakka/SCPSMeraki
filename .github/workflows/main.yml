@@ -47,7 +47,7 @@ jobs:
             
       - name: Invoke-Build build script
         shell: pwsh
-        run: pwsh -command "Invoke-Build -File ./$GITHUB_WORKSPACE\build.ps1 -Configuration 'Release' -ExportAlias -verbose"
+        run: pwsh -command "Invoke-Build -File $GITHUB_WORKSPACE/build.ps1 -Configuration 'Release' -ExportAlias -verbose"
       
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.3
