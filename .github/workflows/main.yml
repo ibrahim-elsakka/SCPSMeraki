@@ -5,8 +5,6 @@ name: CI
 # Controls when the action will run. 
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -68,3 +66,12 @@ jobs:
           name: module-artifact
           # Artifact unpack location
           path: ./Output/
+          
+      - name: Push changes to Git Repository
+        run: |
+          git config --global user.name 'ScriptingChris'
+          git config --global user.email 'christian@scriptingchris.tech'
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git add .
+          git commit -am "Pushing Artifacts"
+          git push
