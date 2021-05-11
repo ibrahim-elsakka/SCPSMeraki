@@ -51,7 +51,7 @@ jobs:
             
       - name: Invoke-Build build script
         shell: pwsh
-        run: pwsh -command "Invoke-Build -File ./build.ps1 -Configuration 'Release' -ExportAlias -verbose"
+        run: pwsh -command "Invoke-Build -File ./main/build.ps1 -Configuration 'Release' -ExportAlias -verbose"
       
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.3
@@ -59,7 +59,7 @@ jobs:
           # Artifact name
           name: module-artifact
           # A file, directory or wildcard pattern that describes what to upload
-          path: ./Output/
+          path: ./main/Output/
           
       - name: Download artifact
         uses: aochmann/actions-download-artifact@1.0.4
@@ -69,4 +69,4 @@ jobs:
           # Artifact name (download all artifacts in not specified)
           name: module-artifact
           # Artifact unpack location
-          path: ~/Output/
+          path: ./main/Output/
