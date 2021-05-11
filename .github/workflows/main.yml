@@ -24,6 +24,12 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+        with:
+          path: main
+          
+      - name: Invoke-Build build script
+        shell: pwsh
+        run: pwsh -command "Get-ChildItem ./"
       
       - name: Set required PowerShell modules
         id: psmodulecache
