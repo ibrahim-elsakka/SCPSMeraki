@@ -53,6 +53,7 @@ jobs:
           # Artifact name
           name: module-artifact
           # A file, directory or wildcard pattern that describes what to upload
+          path: ./
           
       - name: Download artifact
         uses: actions/download-artifact@v2
