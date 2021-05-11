@@ -29,7 +29,7 @@ jobs:
         id: psmodulecache
         uses: potatoqualitee/psmodulecache@v1
         with:
-          modules-to-cache: Pester, PSScriptAnalyzer, InvokeBuild
+          modules-to-cache: Pester, PSScriptAnalyzer, InvokeBuild, platyPS
       - name: Setup PowerShell module cache
         id: cacher
         uses: actions/cache@v2
@@ -45,6 +45,6 @@ jobs:
             
       - name: Invoke-Build build script
         shell: pwsh
-        run: pwsh -command "Invoke-Build -File ./$GITHUB_WORKSPACE\build.ps1 -Configuration 'Release' -ExportAlias"
+        run: pwsh -command "Invoke-Build -File ./$GITHUB_WORKSPACE\build.ps1 -Configuration 'Release' -ExportAlias -verbose"
 
         
