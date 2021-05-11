@@ -18,7 +18,7 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -53,7 +53,7 @@ jobs:
           # Artifact name
           name: Powershell_Module
           # A file, directory or wildcard pattern that describes what to upload
-          path: .\Output\SCPSMeraki
+          path: ./Output/SCPSMeraki
           # The desired behavior if no files are found using the provided path.
           
       - name: Download artifact
@@ -63,4 +63,4 @@ jobs:
         with:
           name: Powershell_Module
           # Download latest artifact
-          path: .\Output
+          path: ./Output
