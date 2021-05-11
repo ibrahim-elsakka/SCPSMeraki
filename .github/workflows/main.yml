@@ -23,11 +23,11 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@master
+      - uses: actions/checkout@main
           
       - name: List Dirs
         shell: pwsh
-        run: pwsh -command "Get-ChildItem ./main/"
+        run: pwsh -command "Get-ChildItem ./"
       
       - name: Set required PowerShell modules
         id: psmodulecache
