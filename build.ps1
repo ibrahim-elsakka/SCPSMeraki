@@ -1,6 +1,7 @@
 param (
     [ValidateSet("Release", "debug")]$Configuration = "debug",
-    [Parameter(Mandatory=$false)][String]$NugetAPIKey
+    [Parameter(Mandatory=$false)][String]$NugetAPIKey,
+    [Parameter(Mandatory=$false)][Switch]$ExportAlias
 )
 
 task Init {
@@ -116,7 +117,26 @@ task DebugBuild -if ($Configuration -eq "debug") {
             $content = Get-Content -Path ".\Source\Public\$($function)"
             Add-Content -Path $ModuleFile -Value "#Region - $function"
             Add-Content -Path $ModuleFile -Value $content
-            Add-Content -Path $ModuleFile -Value "Export-ModuleMember -Function $(($function.split('.')[0]).ToString())"
+            if($ExportAlias.IsPresent){
+                $AliasSwitch = $false
+                $Sel = Select-String -Path ".\Source\Public\$($function)" -Pattern "CmdletBinding" -Context 0,1
+                $mylist = $Sel.ToString().Split([Environment]::NewLine)
+                foreach($s in $mylist){
+                    if($s -match "Alias"){
+                        $alias = (($s.split(":")[2]).split("(")[1]).split(")")[0]
+                        Write-Verbose -Message "Exporting Alias: $($alias) to Function: $($function)"
+                        Add-Content -Path $ModuleFile -Value "Export-ModuleMember -Function $(($function.split('.')[0]).ToString()) -Alias $alias"
+                        $AliasSwitch = $true
+                    }
+                }
+                if($AliasSwitch -eq $false){
+                    Write-Verbose -Message "No alias was found in function: $($function))"
+                    Add-Content -Path $ModuleFile -Value "Export-ModuleMember -Function $(($function.split('.')[0]).ToString())"
+                }
+            }
+            else {
+                Add-Content -Path $ModuleFile -Value "Export-ModuleMember -Function $(($function.split('.')[0]).ToString())"
+            }
             Add-Content -Path $ModuleFile -Value "#EndRegion - $function"            
         }
         catch {
@@ -215,7 +235,26 @@ task Build -if($Configuration -eq "Release"){
             $content = Get-Content -Path ".\Source\Public\$($function)"
             Add-Content -Path $ModuleFile -Value "#Region - $function"
             Add-Content -Path $ModuleFile -Value $content
-            Add-Content -Path $ModuleFile -Value "Export-ModuleMember -Function $(($function.split('.')[0]).ToString())"
+            if($ExportAlias.IsPresent){
+                $AliasSwitch = $false
+                $Sel = Select-String -Path ".\Source\Public\$($function)" -Pattern "CmdletBinding" -Context 0,1
+                $mylist = $Sel.ToString().Split([Environment]::NewLine)
+                foreach($s in $mylist){
+                    if($s -match "Alias"){
+                        $alias = (($s.split(":")[2]).split("(")[1]).split(")")[0]
+                        Write-Verbose -Message "Exporting Alias: $($alias) to Function: $($function)"
+                        Add-Content -Path $ModuleFile -Value "Export-ModuleMember -Function $(($function.split('.')[0]).ToString()) -Alias $alias"
+                        $AliasSwitch = $true
+                    }
+                }
+                if($AliasSwitch -eq $false){
+                    Write-Verbose -Message "No alias was found in function: $($function))"
+                    Add-Content -Path $ModuleFile -Value "Export-ModuleMember -Function $(($function.split('.')[0]).ToString())"
+                }
+            }
+            else {
+                Add-Content -Path $ModuleFile -Value "Export-ModuleMember -Function $(($function.split('.')[0]).ToString())"
+            }
             Add-Content -Path $ModuleFile -Value "#EndRegion - $function"            
         }
         catch {
@@ -247,18 +286,30 @@ task Build -if($Configuration -eq "Release"){
     catch {
         throw "Failed importing the module: $($ModuleName)"
     }
-    if(!(Get-ChildItem -Path ".\Docs")) {
-        If(Get-Module -Name $ModuleName) {
+
+    if(!(Get-ChildItem -Path ".\Docs")){
+        Write-Verbose -Message "Docs folder is empty, generating new fiiles"
+        if(Get-Module -Name $($ModuleName)) {
+            Write-Verbose -Message "Module: $($ModuleName) is imported into session, generating Help Files"
+            New-MarkdownHelp -Module $ModuleName -OutputFolder ".\Docs"
+            New-MarkdownAboutHelp -OutputFolder ".\Docs" -AboutName $ModuleName
+            New-ExternalHelp ".\Docs" -OutputPath ".\Output\$($ModuleName)\$($ModuleVersion)\en-US\"
+        }
+        else {
+            throw "Module is not imported, cannot generate help files"
+        }
+    }
+    else {
+        Write-Verbose -Message "Removing old Help files, to generate new files."
+        Remove-Item -Path ".\Docs\*.*" -Exclude "about_*"
+        if(Get-Module -Name $($ModuleName)) {
+            Write-Verbose -Message "Module: $($ModuleName) is imported into session, generating Help Files"
             New-MarkdownHelp -Module $ModuleName -OutputFolder ".\Docs"
             New-ExternalHelp ".\Docs" -OutputPath ".\Output\$($ModuleName)\$($ModuleVersion)\en-US\"
         }
     }
-    else {
-        If(Get-Module -Name $ModuleName) {
-            Update-MarkdownHelp ".\Docs"
-            New-ExternalHelp ".\Docs" -OutputPath ".\Output\$($ModuleName)\$($ModuleVersion)\en-US\"
-        }
-    }
+
+
 }
 
 
