@@ -63,4 +63,4 @@ jobs:
           # Artifact name (download all artifacts in not specified)
           name: module-artifact
           # Artifact unpack location
-          path: ./Output/
+          path: $GITHUB_WORKSPACE/Output/
