@@ -56,7 +56,11 @@ jobs:
           path: ./Output/
           
       - name: Download artifact
-        uses: actions/download-artifact@v2
+        uses: aochmann/actions-download-artifact@1.0.4
         with:
+          # Repository name with owner
+          repo: ${{github.repository}}
+          # Artifact name (download all artifacts in not specified)
           name: module-artifact
+          # Artifact unpack location
           path: ./Output/
