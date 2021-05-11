@@ -44,7 +44,7 @@ jobs:
             Install-Module ${{ steps.psmodulecache.outputs.needed }} -ErrorAction Stop
             
       - name: Invoke-Build build script
-        if: github.event.action == 'script'
+        shell: pwsh
         run: pwsh -command "Invoke-Build -File ./$GITHUB_WORKSPACE\build.ps1 -Configuration 'Release' -ExportAlias"
 
         
