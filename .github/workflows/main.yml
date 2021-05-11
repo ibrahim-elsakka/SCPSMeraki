@@ -51,16 +51,13 @@ jobs:
         uses: actions/upload-artifact@v2.2.3
         with:
           # Artifact name
-          name: Powershell_Module
+          name: module-artifact
           # A file, directory or wildcard pattern that describes what to upload
           path: ./Output/SCPSMeraki
           # The desired behavior if no files are found using the provided path.
           
       - name: Download artifact
-        # You may pin to the exact commit or the version.
-        # uses: aochmann/actions-download-artifact@5709392f11b5937bd316e52687ad87f7deced5f5
-        uses: aochmann/actions-download-artifact@1.0.4
+      - uses: actions/download-artifact@v2
         with:
-          name: Powershell_Module
-          # Download latest artifact
-          path: ./Output
+          name: module-artifact
+          path: ./Output/
