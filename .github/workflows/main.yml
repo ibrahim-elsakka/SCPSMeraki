@@ -52,7 +52,7 @@ jobs:
         with:
           repo: ${{github.repository}}
           name: module-artifact
-          path: $GITHUB_WORKSPACE/
+          path: Artifact/
       
       - name: List dirs
         shell: pwsh
@@ -60,4 +60,4 @@ jobs:
         
       - name: List dirs
         shell: pwsh
-        run: pwsh -command "Get-ChildItem ./Output/"
+        run: pwsh -command "Get-ChildItem ./Artifact/"
