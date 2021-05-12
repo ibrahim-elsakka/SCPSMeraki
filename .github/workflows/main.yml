@@ -1,43 +1,32 @@
-# This is a basic workflow to help you get started with Actions
-
-name: CI
-
-# Controls when the action will run. 
+name: Build Module
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
   pull_request:
     branches: [ main ]
-
-  # Allows you to run this workflow manually from the Actions tab
+    
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@main
-          
       - name: List Dirs
         shell: pwsh
         run: pwsh -command "Get-ChildItem ./"
-      
+        
       - name: Set required PowerShell modules
         id: psmodulecache
         uses: potatoqualitee/psmodulecache@v1
         with:
           modules-to-cache: Pester, PSScriptAnalyzer, InvokeBuild, platyPS
+      
       - name: Setup PowerShell module cache
         id: cacher
         uses: actions/cache@v2
         with:
             path: ${{ steps.psmodulecache.outputs.modulepath }}
             key: ${{ steps.psmodulecache.outputs.keygen }}
+      
       - name: Install required PowerShell modules
         if: steps.cacher.outputs.cache-hit != 'true'
         shell: pwsh
@@ -48,25 +37,10 @@ jobs:
       - name: Invoke-Build build script
         shell: pwsh
         run: pwsh -command "Invoke-Build -File ./build.ps1 -Configuration 'Release' -ExportAlias -verbose"
-      
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v2.2.3
-        with:
-          # Artifact name
-          name: module-artifact
-          # A file, directory or wildcard pattern that describes what to upload
-          path: ./Output/
-          
-      - name: Download artifact
-        uses: aochmann/actions-download-artifact@1.0.4
-        with:
-          # Repository name with owner
-          repo: ${{github.repository}}
-          # Artifact name (download all artifacts in not specified)
-          name: module-artifact
-          # Artifact unpack location
-          path: ./Output/
-          
+
+  release:
+    runs-on: ubuntu-latest
+    steps:
       - name: Push changes to Git Repository
         run: |
           git config --global user.name 'ScriptingChris'
