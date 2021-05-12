@@ -35,14 +35,14 @@ jobs:
         shell: pwsh
         run: pwsh -command "Invoke-Build -File ./build.ps1 -Configuration 'Release' -ExportAlias"
         
-      - name: Push changes to Git Repository
-        run: |
-          git config --global user.name 'ScriptingChris'
-          git config --global user.email 'christian@scriptingchris.tech'
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          git add .
-          git commit -am "Pushing Artifacts"
-          git push
+      #- name: Push changes to Git Repository
+        #run: |
+          #git config --global user.name 'ScriptingChris'
+          #git config --global user.email 'christian@scriptingchris.tech'
+          #git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          #git add .
+          #git commit -am "Pushing Artifacts"
+          #git push
         
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v2.2.3
@@ -59,9 +59,19 @@ jobs:
       - name: Download artifact
         uses: aochmann/actions-download-artifact@1.0.4
         with:
-          # Repository name with owner
           repo: ${{github.repository}}
-          # Artifact name (download all artifacts in not specified)
           name: module-artifact
-          # Artifact unpack location
           path: ./Output/
+      
+      - name: List dirs
+        shell: pwsh
+        run: pwsh -command "Get-ChildItem ./"
+        
+      - name: List dirs
+        shell: pwsh
+        run: pwsh -command "Get-ChildItem ./Output/"
+        
+
+      
+
+${{ secrets.NUGETAPIKEY }}
