@@ -52,7 +52,7 @@ jobs:
         with:
           repo: ${{github.repository}}
           name: module-artifact
-          path: ./Output/
+          path: $GITHUB_WORKSPACE/
       
       - name: List dirs
         shell: pwsh
