@@ -49,6 +49,11 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@main
+      - name: List Dirs
+        shell: pwsh
+        run: pwsh -command "Get-ChildItem ./"
+        
       - name: Download artifact
         uses: aochmann/actions-download-artifact@1.0.4
         with:
