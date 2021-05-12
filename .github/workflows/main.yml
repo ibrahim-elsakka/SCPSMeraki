@@ -35,15 +35,6 @@ jobs:
         shell: pwsh
         run: pwsh -command "Invoke-Build -File ./build.ps1 -Configuration 'Release' -ExportAlias"
         
-      #- name: Push changes to Git Repository
-        #run: |
-          #git config --global user.name 'ScriptingChris'
-          #git config --global user.email 'christian@scriptingchris.tech'
-          #git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          #git add .
-          #git commit -am "Pushing Artifacts"
-          #git push
-        
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v2.2.3
         with:
