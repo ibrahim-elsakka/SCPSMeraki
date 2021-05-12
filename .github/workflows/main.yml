@@ -37,10 +37,28 @@ jobs:
       - name: Invoke-Build build script
         shell: pwsh
         run: pwsh -command "Invoke-Build -File ./build.ps1 -Configuration 'Release' -ExportAlias -verbose"
+        
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2.2.3
+        with:
+          # Artifact name
+          name: module-artifact
+          # A file, directory or wildcard pattern that describes what to upload
+          path: ./Output/
 
   release:
     runs-on: ubuntu-latest
     steps:
+      - name: Download artifact
+        uses: aochmann/actions-download-artifact@1.0.4
+        with:
+          # Repository name with owner
+          repo: ${{github.repository}}
+          # Artifact name (download all artifacts in not specified)
+          name: module-artifact
+          # Artifact unpack location
+          path: ./Output/
+          
       - name: Push changes to Git Repository
         run: |
           git config --global user.name 'ScriptingChris'
