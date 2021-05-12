@@ -75,5 +75,5 @@ jobs:
         # uses: pcgeek86/publish-powershell-module-action@2a7837ce0746ea58c40574d8d6cbc6c44238edb7
         uses: pcgeek86/publish-powershell-module-action@v19
         with:
-          modulePath: ./Artifact/${env:MODULE_NAME}
+          modulePath: ./Artifact/${{ env.MODULE_NAME }}
           NuGetApiKey: ${{ secrets.NUGETAPIKEY }} 
