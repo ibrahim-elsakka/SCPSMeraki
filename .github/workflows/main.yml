@@ -60,4 +60,4 @@ jobs:
         
       - name: List dirs
         shell: pwsh
-        run: pwsh -command "Get-ChildItem ./Artifact/"
+        run: pwsh -command "Get-ChildItem ./Artifact/SCPSMeraki"
