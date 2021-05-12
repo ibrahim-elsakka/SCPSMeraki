@@ -61,8 +61,3 @@ jobs:
       - name: List dirs
         shell: pwsh
         run: pwsh -command "Get-ChildItem ./Output/"
-        
-
-      
-
-${{ secrets.NUGETAPIKEY }}
