@@ -393,18 +393,15 @@ Export-ModuleMember -Function Get-SCMrkNetworks
 function Get-SCMrkNetworkSNMP {
     <#
     .SYNOPSIS
-        Short description
+        Cmdlet for retrieving SNMP configurations of a network
     .DESCRIPTION
-        Long description
+        This cmdlet will query a specific network and output the SNMP configurations from it
     .EXAMPLE
-        PS C:\> <example usage>
-        Explanation of what the example does
-    .INPUTS
-        Inputs (if any)
-    .OUTPUTS
-        Output (if any)
+        PS C:\> Get-SCMrkNetworkSNMP -Id L_918231134598135
+        
+        This example will retrieve the SNMP configurations from the network L_918231134598135
     .NOTES
-        General notes
+        Meraki API Docs: https://developer.cisco.com/meraki/api-v1/#!get-network-snmp
     #>
 
     [CmdletBinding()]
@@ -869,18 +866,29 @@ Export-ModuleMember -Function Set-SCMrkL3FirewallRule
 function Set-SCMrkNetworkSNMP {
     <#
     .SYNOPSIS
-        Short description
+        Cmdlet for setting SNMP configurations on a specific Meraki Network.
     .DESCRIPTION
-        Long description
+        Cmdlet for setting SNMP configurations on a specfic Meraki Network. This cmdlet can be used
+        for setting either Version 1/2c or 3 on a Meraki Network. You will still need to configure 
+        access in the L3 firewall besides setting this configuration.
     .EXAMPLE
-        PS C:\> <example usage>
-        Explanation of what the example does
-    .INPUTS
-        Inputs (if any)
-    .OUTPUTS
-        Output (if any)
+        PS C:\> Set-SCMrkNetworkSNMP -Id L_918231134598135 -SetCommunity -CommunityString "Password1"
+        
+        This example will configure SNMP V1/2c for the network L_918231134598135. It will set the Community String:
+        Password1
+    
+    .EXAMPLE
+        PS C:\> Set-SCMrkNetworkSNMP -Id L_918231134598135 -SetUsers -UserPass "Password1" -UserName "User1"
+        
+        This example will configure SNMP V3 for the network L_918231134598135. It will set a user with Username: User1
+        and Password: Password1. If there are already a user configured it will just add the user to the list.
+    
+    .EXAMPLE
+        PS C:\> Set-SCMrkNetworkSNMP -Id L_918231134598135 -DisableSNMP
+
+        This example will disable SNMP on the network. All SNMP configurations such as users for Version 3 will be erased.
     .NOTES
-        General notes
+        Meraki API Docs: https://developer.cisco.com/meraki/api-v1/#!update-network-snmp
     #>
 
     [CmdletBinding()]
@@ -1004,6 +1012,150 @@ function Set-SCMrkNetworkSNMP {
 }
 Export-ModuleMember -Function Set-SCMrkNetworkSNMP
 #EndRegion - Set-SCMrkNetworkSNMP.ps1
+#Region - Set-SCMrkSwitchPort.ps1
+function Set-SCMrkSwitchPort {
+    <#
+    .SYNOPSIS
+        Short description
+    .DESCRIPTION
+        Long description
+    .EXAMPLE
+        PS C:\> <example usage>
+        Explanation of what the example does
+    .INPUTS
+        Inputs (if any)
+    .OUTPUTS
+        Output (if any)
+    .NOTES
+        General notes
+    #>
+
+    [CmdletBinding()]
+    param (
+        # Default Cmdlet Parameters
+        [Parameter(Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [String]$ApiKey = $ApiKey,
+
+        # Default Switch Port Parameters
+        [Parameter(Mandatory=$true, ValueFromPipelineByPropertyName=$true, ValueFromPipeline=$true)]
+        [ValidateNotNullOrEmpty()]
+        [String]$Serial,
+        [Parameter(Mandatory=$true)]
+        [String]$PortId,
+        [Parameter(Mandatory=$true, HelpMessage="Enter descriptive name of the port")]
+        [String]$Name,
+        [Parameter(Mandatory=$false)]
+        [Boolean]$Enabled = $true,
+        [Parameter(Mandatory=$false)]
+        [Boolean]$poeEnabled = $true,
+        [Parameter(Mandatory=$true, HelpMessage="Enter a VLAN Id")]
+        [String]$Vlan,
+        [Parameter(Mandatory=$false)]
+        [String]$VoiceVlan,
+        [Parameter(Mandatory=$false)]
+        [Boolean]$isolationEnabled = $false,
+        [Parameter(Mandatory=$false)]
+        [Boolean]$rstpEnabled = $true,
+        [Parameter(Mandatory=$false)]
+        [String]$stpGuard = "disabled",
+        [Parameter(Mandatory=$false)]
+        [String]$LinkNegotiation = "Auto negotiate",
+        [Parameter(Mandatory=$false)]
+        [String]$udld = "Alert only",
+
+        # Default Access Port Parameters
+        [Parameter(Mandatory=$false, ParameterSetName="access")]
+        [Switch]$AccessPort,
+        [Parameter(Mandatory=$false, ParameterSetName="access")]
+        [String]$AccessPolicy = "Open",
+
+        # Default Trunk Port Parameters
+        [Parameter(Mandatory=$false, ParameterSetName="trunk")]
+        [Switch]$TrunkPort,
+        [Parameter(Mandatory=$false, ParameterSetName="trunk")]
+        [String]$AllowedVlans
+    )
+
+    Begin {
+        if($AccessPort.IsPresent){
+            Write-Verbose -Message "Configuring Port: $($PortId) as an Access Port"
+        }
+        elseif($TrunkPort.IsPresent){
+            Write-Verbose -Message "Configuring Port $($PortId) as a Trunk Port"
+        }
+        else {
+            Write-Error -Message "Neither of -AccessPort or -TrunkPort Switches where set as a parameter. Exiting function."
+            Exit
+        }
+    }
+
+    Process {
+
+        if($AccessPort.IsPresent){
+            Write-Verbose -Message "Creating Access Port Data Object"
+            $payload = New-Object -TypeName PSObject -Property @{
+                "portId"                = $PortId
+                "name"                  = $Name
+                "enabled"               = $Enabled
+                "poeEnabled"            = $poeEnabled
+                "type"                  = "access"
+                "vlan"                  = $Vlan
+                "voiceVlan"             = $VoiceVlan
+                "allowedVlans"          = ""
+                "isolationEnabled"      = $IsolationEnabled
+                "rstpEnabled"           = $rstpEnabled
+                "stpGuard"              = $stpGuard
+                "linkNegotiation"       = $LinkNegotiation
+                "udld"                  = $udld
+                "accessPolicyType"      = $AccessPolicy
+            }
+            if(!$VoiceVlan){
+                $payload = $payload | Select-Object -ExcludeProperty voiceVlan
+            }
+        }
+        elseif($TrunkPort.IsPresent){
+            Write-Verbose -Message "Creating Trunk Port Data Object"
+            $payload = New-Object -TypeName PSObject -Property @{
+                "portId"                = $PortId
+                "name"                  = $Name
+                "enabled"               = $Enabled
+                "poeEnabled"            = $poeEnabled
+                "type"                  = "trunk"
+                "vlan"                  = $Vlan
+                "allowedVlans"          = $AllowedVlans
+                "isolationEnabled"      = $IsolationEnabled
+                "rstpEnabled"           = $rstpEnabled
+                "stpGuard"              = $stpGuard
+                "linkNegotiation"       = $LinkNegotiation
+                "udld"                  = $udld
+            }
+        }
+        
+        try {
+            $result = Invoke-PRMerakiApiCall -Method PUT -Resource "/devices/$($Serial)/switch/ports/$($PortId)" -ApiKey $ApiKey -Payload $payload
+        }
+        catch {
+            Write-Error -Message "$($_)"
+        }
+        
+
+    }
+
+    End {
+        if($result){
+            try {
+                $request =  Invoke-PRMerakiApiCall -Method GET -Resource "/devices/$($Serial)/switch/ports/$($PortId)" -ApiKey $ApiKey
+                return $request
+            }
+            catch {
+                Write-Error -Message "$($_)"
+            }
+        }
+    }
+}
+Export-ModuleMember -Function Set-SCMrkSwitchPort
+#EndRegion - Set-SCMrkSwitchPort.ps1
 ### --- PRIVATE FUNCTIONS --- ###
 #Region - Invoke-PRMerakiApiCall.ps1
 function Invoke-PRMerakiApiCall {

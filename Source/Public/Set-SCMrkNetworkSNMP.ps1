@@ -1,18 +1,29 @@
 function Set-SCMrkNetworkSNMP {
     <#
     .SYNOPSIS
-        Short description
+        Cmdlet for setting SNMP configurations on a specific Meraki Network.
     .DESCRIPTION
-        Long description
+        Cmdlet for setting SNMP configurations on a specfic Meraki Network. This cmdlet can be used
+        for setting either Version 1/2c or 3 on a Meraki Network. You will still need to configure 
+        access in the L3 firewall besides setting this configuration.
     .EXAMPLE
-        PS C:\> <example usage>
-        Explanation of what the example does
-    .INPUTS
-        Inputs (if any)
-    .OUTPUTS
-        Output (if any)
+        PS C:\> Set-SCMrkNetworkSNMP -Id L_918231134598135 -SetCommunity -CommunityString "Password1"
+        
+        This example will configure SNMP V1/2c for the network L_918231134598135. It will set the Community String:
+        Password1
+    
+    .EXAMPLE
+        PS C:\> Set-SCMrkNetworkSNMP -Id L_918231134598135 -SetUsers -UserPass "Password1" -UserName "User1"
+        
+        This example will configure SNMP V3 for the network L_918231134598135. It will set a user with Username: User1
+        and Password: Password1. If there are already a user configured it will just add the user to the list.
+    
+    .EXAMPLE
+        PS C:\> Set-SCMrkNetworkSNMP -Id L_918231134598135 -DisableSNMP
+
+        This example will disable SNMP on the network. All SNMP configurations such as users for Version 3 will be erased.
     .NOTES
-        General notes
+        Meraki API Docs: https://developer.cisco.com/meraki/api-v1/#!update-network-snmp
     #>
 
     [CmdletBinding()]

@@ -73,7 +73,8 @@ FunctionsToExport = 'Get-SCMrkClient', 'Get-SCMrkDevice', 'Get-SCMrkDeviceClient
                'Get-SCMrkL3FirewallRules', 'Get-SCMrkNetworkDevices', 
                'Get-SCMrkNetworks', 'Get-SCMrkNetworkSNMP', 'Get-SCMrkNetworkVlans', 
                'Get-SCMrkSwitchPort', 'Get-SCMrkSwitchPorts', 'Set-SCMrkAuth', 
-               'Set-SCMrkL3FirewallRule', 'Set-SCMrkNetworkSNMP'
+               'Set-SCMrkL3FirewallRule', 'Set-SCMrkNetworkSNMP', 
+               'Set-SCMrkSwitchPort'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()

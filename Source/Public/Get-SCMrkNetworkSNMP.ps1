@@ -1,18 +1,15 @@
 function Get-SCMrkNetworkSNMP {
     <#
     .SYNOPSIS
-        Short description
+        Cmdlet for retrieving SNMP configurations of a network
     .DESCRIPTION
-        Long description
+        This cmdlet will query a specific network and output the SNMP configurations from it
     .EXAMPLE
-        PS C:\> <example usage>
-        Explanation of what the example does
-    .INPUTS
-        Inputs (if any)
-    .OUTPUTS
-        Output (if any)
+        PS C:\> Get-SCMrkNetworkSNMP -Id L_918231134598135
+        
+        This example will retrieve the SNMP configurations from the network L_918231134598135
     .NOTES
-        General notes
+        Meraki API Docs: https://developer.cisco.com/meraki/api-v1/#!get-network-snmp
     #>
 
     [CmdletBinding()]
