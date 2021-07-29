@@ -5,7 +5,6 @@ param (
 )
 
 task Init {
-    #Todo - Initializing build sequence with modules and dependencies
     Write-Verbose -Message "Initializing Module PSScriptAnalyzer"
     if (-not(Get-Module -Name PSScriptAnalyzer -ListAvailable)){
         Write-Warning "Module 'PSScriptAnalyzer' is missing or out of date. Installing module now."
@@ -32,8 +31,6 @@ task Init {
 }
 
 task Test {
-
-    #Todo running PSScriptAnalyzer and Pester tests
     try {
         Write-Verbose -Message "Running PSScriptAnalyzer on Public functions"
         Invoke-ScriptAnalyzer ".\Source\Public" -Recurse
@@ -275,6 +272,15 @@ task Build -if($Configuration -eq "Release"){
         catch {
             throw "Failed adding content to .psm1 for function: $($function)"
         }
+    }
+
+    Write-Verbose -Message "Updating Module Manifest with root module"
+    try {
+        Write-Verbose -Message "Updating the Module Manifest"
+        Update-ModuleManifest -Path ".\Output\$($ModuleName)\$($ModuleVersion)\$($ModuleName).psd1" -RootModule "$($ModuleName).psm1"
+    }
+    catch {
+        Write-Warning -Message "Failed appinding the rootmodule to the Module Manifest"
     }
 
     Write-Verbose -Message "Compiling Help files"

@@ -1,4 +1,4 @@
-function Get-SCMrkDevices {
+function Get-SCMrkNetworkDevices {
     <#
     .SYNOPSIS
         Cmdlet for retrieving all (meraki)devices on a network
@@ -11,7 +11,7 @@ function Get-SCMrkDevices {
         This example will retrive all the networks located on the network with the "<network_id>" you
         provided the in the parameter Id.
     .EXAMPLE
-        PS C:\> (Get-SCMrkNetworks | ? Name -eq "Network1").Id | Get-SCMrkDevices
+        PS C:\> (Get-SCMrkNetworks | ? Name -eq "Network1").Id | Get-SCMrkNetworkDevices
 
         This example will grap the id of the network with name "Network1" through the pipeline and
         return all the (network)devices on that specific network.

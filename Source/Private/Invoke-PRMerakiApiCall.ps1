@@ -8,7 +8,9 @@ function Invoke-PRMerakiApiCall {
         [Parameter(ValueFromPipeline=$true, Mandatory=$true)]
         [String]$Resource,
         [Parameter(Mandatory=$true)]
-        [String]$ApiKey    
+        [String]$ApiKey,
+        [Parameter(Mandatory=$false)]
+        [object]$Payload
     )
 
     begin {
@@ -27,14 +29,35 @@ function Invoke-PRMerakiApiCall {
     }
 
     process {
-        Write-Verbose -Message "Invoking the API call with uri: $($baseUrl)/$($Resource) and the Method: $($Method)"
-        try {
-            $result = Invoke-RestMethod -Uri $baseUrl/$Resource -Method $Method -Headers $headers
-            return $result
+        if(!$Payload) {
+            Write-Verbose -Message "Invoking the API call with uri: $($baseUrl)/$($Resource) and the Method: $($Method)"
+            try {
+                $result = Invoke-RestMethod -Uri $baseUrl/$Resource -Method $Method -Headers $headers
+                return $result
+            }
+            catch {
+                $statusCode = $_.Exception.Response.StatusCode.value__
+                $statusDescription = $_.Exception.Response.StatusDescription
+            }
         }
-        catch {
-            $statusCode = $_.Exception.Response.StatusCode.value__
-            $statusDescription = $_.Exception.Response.StatusDescription
+        elseif($Payload) {
+            Write-Verbose -Message "Invoking the API call with uri: $($baseUrl)/$($Resource) and the Method: $($Method) with a Payload"
+            $Body = $Payload | ConvertTo-Json
+            if($Body){
+                Write-Verbose "Payload was create. Sending HTTP Request"
+                try {
+                    $result = Invoke-RestMethod -Uri $baseUrl/$Resource -Method $Method -Headers $headers -Body $Body
+                    return $result
+                }
+                catch {
+                    Write-Error "$($_)"
+                    $statusCode = $_.Exception.Response.StatusCode.value__
+                    $statusDescription = $_.Exception.Response.StatusDescription
+                }
+            }
+            else {
+                Write-Warning "Payload couldn't be found"
+            }
         }
     }
 
