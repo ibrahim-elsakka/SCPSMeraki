@@ -1,4 +1,106 @@
 ### --- PUBLIC FUNCTIONS --- ###
+#Region - Get-SCMrkAppliancePort.ps1
+function Get-SCMrkAppliancePort {
+    <#
+    .SYNOPSIS
+        Cmdlet for retrieving data on a specific MX Appliance port in a Network
+    .DESCRIPTION
+        This cmdlet will retrieve an Object with configuration data on a specific MX
+        appliance port
+    .EXAMPLE
+        PS C:\> Get-SCMrkAppliancePorts -Id $id -Port 1
+        
+        This example will retrieve data on port 1 on the MX appliance in the network: $id
+    .NOTES
+        Meraki API Docs: https://developer.cisco.com/meraki/api-v1/#!get-network-appliance-port
+    #>
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$true, ValueFromPipelineByPropertyName=$true, ValueFromPipeline=$true)]
+        [ValidateNotNullOrEmpty()]
+        [String]$Id,
+        [Parameter(Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [String]$ApiKey = $ApiKey,
+        [Parameter(Mandatory=$true)]
+        [String]$PortId
+    )
+    
+    begin {
+        Write-Verbose -Message "Querying Meraki API for the Appliance port: $($PortId) in Network: $($Id)"
+    }
+    
+    process {
+        try {
+            Write-Verbose -Message "Retrieving Meraki Appliance Port: $($PortId) on network: $($Id)"
+            $result = Invoke-PRMerakiApiCall -Method GET -Resource "/networks/$($Id)/appliance/ports/$($PortId)" -ApiKey $ApiKey
+            Write-Output -InputObject $result
+        }
+        catch {
+            $statusCode = $_.Exception.Response.StatusCode.value__
+            $statusDescription = $_.Exception.Response.StatusDescription
+        }
+    }
+    
+    end {
+        if($statusCode){
+            Write-Error -Message "Status code: $($statusCode), Error Description: $($statusDescription)"
+        }
+    }
+}
+Export-ModuleMember -Function Get-SCMrkAppliancePort
+#EndRegion - Get-SCMrkAppliancePort.ps1
+#Region - Get-SCMrkAppliancePorts.ps1
+function Get-SCMrkAppliancePorts {
+    <#
+    .SYNOPSIS
+        Cmdlet for retrieving all appliance ports from a specified network
+    .DESCRIPTION
+        This cmdlet will retrieve an object containing configuration data on all the ports
+        on a MX appliance.
+    .EXAMPLE
+        PS C:\> Get-SCMrkAppliancePorts -Id $id
+        
+        This example will retrieve information on all the ports on the MX appliance on the network $Id
+    .NOTES
+        Meraki API Docs: https://developer.cisco.com/meraki/api-v1/#!get-network-appliance-ports
+    #>
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$true, ValueFromPipelineByPropertyName=$true, ValueFromPipeline=$true)]
+        [ValidateNotNullOrEmpty()]
+        [String]$Id,
+        [Parameter(Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [String]$ApiKey = $ApiKey
+    )
+    
+    begin {
+        Write-Verbose -Message "Querying Meraki API for Appliance ports in Network: $($Id)"
+    }
+    
+    process {
+        try {
+            Write-Verbose -Message "Retrieving Meraki Appliance Ports from network: $($Id)"
+            $result = Invoke-PRMerakiApiCall -Method GET -Resource "/networks/$($Id)/appliance/ports" -ApiKey $ApiKey
+            Write-Output -InputObject $result
+        }
+        catch {
+            $statusCode = $_.Exception.Response.StatusCode.value__
+            $statusDescription = $_.Exception.Response.StatusDescription
+        }
+    }
+    
+    end {
+        if($statusCode){
+            Write-Error -Message "Status code: $($statusCode), Error Description: $($statusDescription)"
+        }
+    }
+}
+Export-ModuleMember -Function Get-SCMrkAppliancePorts
+#EndRegion - Get-SCMrkAppliancePorts.ps1
 #Region - Get-SCMrkClient.ps1
 function Get-SCMrkClient {
     <#
@@ -200,6 +302,109 @@ function Get-SCMrkDeviceClients {
 }
 Export-ModuleMember -Function Get-SCMrkDeviceClients
 #EndRegion - Get-SCMrkDeviceClients.ps1
+#Region - Get-SCMrkFirewalledService.ps1
+function Get-SCMrkFirewalledService {
+    <#
+    .SYNOPSIS
+        Cmdlet for retrieving a specified firewalled service from a network
+    .DESCRIPTION
+        This cmdlet will retrieve information on a specific firewalled service on a network.
+        It will retrieve information such as Access policy, Allowed IPs.
+    .EXAMPLE
+        PS C:\> Get-SCMrkFirewalledService -Id $Id -Service "SNMP"
+        
+        This example will retrieve a PowerShell object containing configurations for the SNMP firewalled service
+        on a specific network
+    .NOTES
+        Meraki API Docs: https://developer.cisco.com/meraki/api-v1/#!get-network-appliance-firewall-firewalled-service
+    #>
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$true, ValueFromPipelineByPropertyName=$true, ValueFromPipeline=$true)]
+        [ValidateNotNullOrEmpty()]
+        [String]$Id,
+        [Parameter(Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [String]$ApiKey = $ApiKey,
+        [Parameter(Mandatory=$true)]
+        [String]$Service
+    )
+    
+    begin {
+        Write-Verbose -Message "Querying Meraki API for firewalled service: $($Service) in Network: $($Id)"
+    }
+    
+    process {
+        try {
+            Write-Verbose -Message "Retrieving Meraki Device"
+            $result = Invoke-PRMerakiApiCall -Method GET -Resource "/networks/$($Id)/appliance/firewall/firewalledServices/$($Service)" -ApiKey $ApiKey
+            Write-Output -InputObject $result
+        }
+        catch {
+            $statusCode = $_.Exception.Response.StatusCode.value__
+            $statusDescription = $_.Exception.Response.StatusDescription
+        }
+    }
+    
+    end {
+        if($statusCode){
+            Write-Error -Message "Status code: $($statusCode), Error Description: $($statusDescription)"
+        }
+    }
+}
+Export-ModuleMember -Function Get-SCMrkFirewalledService
+#EndRegion - Get-SCMrkFirewalledService.ps1
+#Region - Get-SCMrkFirewalledServices.ps1
+function Get-SCMrkFirewalledServices {
+    <#
+    .SYNOPSIS
+        Cmdlet for retrieving firewalled services from a specific network
+    .DESCRIPTION
+        This cmdlet will query a specified network and retrieve an object of firewalled
+        service
+    .EXAMPLE
+        PS C:\> Get-SCMrkFirewalledServices -Id $Id
+        
+        This example will retrieve a PowerShell object of all the firewalled services in a network
+    .NOTES
+        Meraki API Docs: https://developer.cisco.com/meraki/api-v1/#!get-network-appliance-firewall-firewalled-services
+    #>
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$true, ValueFromPipelineByPropertyName=$true, ValueFromPipeline=$true)]
+        [ValidateNotNullOrEmpty()]
+        [String]$Id,
+        [Parameter(Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [String]$ApiKey = $ApiKey
+    )
+    
+    begin {
+        Write-Verbose -Message "Querying Meraki API for firewalled services in Network: $($Id)"
+    }
+    
+    process {
+        try {
+            Write-Verbose -Message "Retrieving Meraki Device"
+            $result = Invoke-PRMerakiApiCall -Method GET -Resource "/networks/$($Id)/appliance/firewall/firewalledServices" -ApiKey $ApiKey
+            Write-Output -InputObject $result
+        }
+        catch {
+            $statusCode = $_.Exception.Response.StatusCode.value__
+            $statusDescription = $_.Exception.Response.StatusDescription
+        }
+    }
+    
+    end {
+        if($statusCode){
+            Write-Error -Message "Status code: $($statusCode), Error Description: $($statusDescription)"
+        }
+    }
+}
+Export-ModuleMember -Function Get-SCMrkFirewalledServices
+#EndRegion - Get-SCMrkFirewalledServices.ps1
 #Region - Get-SCMrkL3FirewallRules.ps1
 function Get-SCMrkL3FirewallRules {
     <#
@@ -500,6 +705,56 @@ function Get-SCMrkNetworkVlans {
 }
 Export-ModuleMember -Function Get-SCMrkNetworkVlans
 #EndRegion - Get-SCMrkNetworkVlans.ps1
+#Region - Get-SCMrkSiteToSiteVPN.ps1
+function Get-SCMrkSiteToSiteVPN {
+    <#
+    .SYNOPSIS
+        This cmdlet will retrieve all Site To Site VPN configurations on a network
+    .DESCRIPTION
+        This cmdlet will return an object containing all data regarding Site To Site configuration
+        for a specific network
+    .EXAMPLE
+        PS C:\> Get-SCMrkSiteToSiteVPN -Id $Id
+
+        This example will retrieve the Site To Site configurations for the Network $id
+    .NOTES
+        Meraki API Docs: https://developer.cisco.com/meraki/api-v1/#!update-network-appliance-vpn-site-to-site-vpn
+    #>
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$true, ValueFromPipelineByPropertyName=$true, ValueFromPipeline=$true)]
+        [ValidateNotNullOrEmpty()]
+        [String]$Id,
+        [Parameter(Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [String]$ApiKey = $ApiKey
+    )
+
+    begin {
+        Write-Verbose -Message "Querying Meraki API for the Site To Site configurations in Network: $($Id)"
+    }
+    
+    process {
+        try {
+            Write-Verbose -Message "Retrieving Meraki Site To Site config for network: $($Id)"
+            $result = Invoke-PRMerakiApiCall -Method GET -Resource "/networks/$($Id)/appliance/vpn/siteToSiteVpn" -ApiKey $ApiKey
+            Write-Output -InputObject $result
+        }
+        catch {
+            $statusCode = $_.Exception.Response.StatusCode.value__
+            $statusDescription = $_.Exception.Response.StatusDescription
+        }
+    }
+    
+    end {
+        if($statusCode){
+            Write-Error -Message "Status code: $($statusCode), Error Description: $($statusDescription)"
+        }
+    }
+}
+Export-ModuleMember -Function Get-SCMrkSiteToSiteVPN
+#EndRegion - Get-SCMrkSiteToSiteVPN.ps1
 #Region - Get-SCMrkSwitchPort.ps1
 function Get-SCMrkSwitchPort {
     <#
@@ -633,6 +888,112 @@ function Get-SCMrkSwitchPorts {
 }
 Export-ModuleMember -Function Get-SCMrkSwitchPorts
 #EndRegion - Get-SCMrkSwitchPorts.ps1
+#Region - Set-SCMrkAppliancePort.ps1
+function Set-SCMrkAppliancePort {
+    <#
+    .SYNOPSIS
+        Cmdlet for configuring a single port on a MX appliance
+    .DESCRIPTION
+        This cmdlet will configure a single port on a MX appliance as either an Accsess port or a Trunk port.
+    .EXAMPLE
+        PS C:\> Set-SCMrkAppliancePort -id $id -PortId 5 -Type "access" -vlan 30
+        
+        This example will configure port 5 as an access port and set it to VLAN 30
+    .EXAMPLE
+        PS C:\> Set-SCMrkAppliancePort -id $id -PortId 5 -Type "trunk" -vlan 1 -AllowedVlans "10,20,30,400,555"
+
+        This example will configure port 5 as a trunk and set the native vlan to be 1 and allow the vlans:
+        10,20,30,400,555 to be tagged on the trunk.
+    .NOTES
+        Meraki API Docs: https://developer.cisco.com/meraki/api-v1/#!update-network-appliance-port
+    #>
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$true, ValueFromPipelineByPropertyName=$true, ValueFromPipeline=$true)]
+        [ValidateNotNullOrEmpty()]
+        [String]$Id,
+        [Parameter(Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [String]$ApiKey = $ApiKey,
+        [Parameter(Mandatory=$true, HelpMessage="Enter the port number of the port you want to configure")]
+        [String]$PortId,
+        [Parameter(Mandatory=$false)]
+        [Boolean]$Enabled = $true,
+        [Parameter(Mandatory=$true, HelpMessage="Enter a VLAN Id")]
+        [String]$Vlan,
+        [Parameter(Mandatory=$false)]
+        [Boolean]$DropUntaggedTraffic = $false,
+        [Parameter(Mandatory=$true, HelpMessage="Enter a Type: trunk or access")]
+        [ValidateSet("trunk","access")]
+        [String]$Type,
+        [Parameter(Mandatory=$false)]
+        [String]$AccessPolicy = "Open",
+        [Parameter(Mandatory=$false, HelpMessage="A comma seperated string with the vlans or type all to allow all vlans")]
+        [String]$AllowedVlans
+    )
+
+    Begin {
+        if($Type -eq "trunk"){
+            Write-Verbose -Message "Port will be configured as trunk"
+            if(!$AllowedVlans){
+                Write-Error -Message "You will need to specify the parameter -AllowedVlans when configuring a Trunk"
+                Exit
+            }
+            else {
+                $SwitchParameter = "trunk"
+            }
+        }
+        else {
+            Write-Verbose -Message "Port will be configured as an access port"
+            $SwitchParameter = "access"
+        }
+    }
+
+    Process {
+        Switch($SwitchParameter) {
+            "trunk" {
+                $payload = New-Object -TypeName psobject -Property @{
+                    "enabled"               = $Enabled
+                    "type"                  = $Type
+                    "dropUntaggedTraffic"   = $DropUntaggedTraffic
+                    "vlan"                  = $Vlan
+                    "allowedVlans"          = $AllowedVlans
+                }
+            }
+            "access" {
+                $payload = New-Object -TypeName psobject -Property @{
+                    "enabled"               = $Enabled
+                    "type"                  = $Type
+                    "dropUntaggedTraffic"   = $DropUntaggedTraffic
+                    "vlan"                  = $Vlan
+                    "accessPolicy"          = $AccessPolicy
+                }
+            }
+        }
+        
+        try {
+            $result = Invoke-PRMerakiApiCall -Method PUT -Resource "/networks/$($Id)/appliance/ports/$($PortId)" -ApiKey $ApiKey -Payload $payload
+        }
+        catch {
+            Write-Error -Message "$($_)"
+        }
+    }
+
+    End {
+        if($result){
+            try {
+                $request =  Invoke-PRMerakiApiCall -Method GET -Resource "/networks/$($Id)/appliance/ports/$($PortId)" -ApiKey $ApiKey
+                return $request
+            }
+            catch {
+                Write-Error -Message "$($_)"
+            }
+        }
+    }
+}
+Export-ModuleMember -Function Set-SCMrkAppliancePort
+#EndRegion - Set-SCMrkAppliancePort.ps1
 #Region - Set-SCMrkAuth.ps1
 function Set-SCMrkAuth {
     <#
@@ -727,6 +1088,114 @@ function Set-SCMrkAuth {
 }
 Export-ModuleMember -Function Set-SCMrkAuth
 #EndRegion - Set-SCMrkAuth.ps1
+#Region - Set-SCMrkFirewalledService.ps1
+function Set-SCMrkFirewalledService {
+    <#
+    .SYNOPSIS
+        Cmdlet for setting a firewalled service on a specified network
+    .DESCRIPTION
+        This cmdlet will configure a firewalled service on a network. You can configure the
+        services: web, SNMP and ICMP.
+        You can configure the service to be either: blocked, restricted or unrestricted.
+    .EXAMPLE
+        PS C:\> Set-SCMrkFirewalledService -Id $Id -Service "SNMP" -Access "restricted" -AllowedIPs @("10.245.0.23", "10.232.45.90")
+        
+        This example will set the service SNMP on the network $Id to be restricted and only the IPs 10.245.0.23 and 10.232.45.90
+        Will have access to that service.
+    .EXAMPLE
+        PS C:\> Set-SCMrkFirewalledService -Id $Id -Service "web" -Access "blocked"
+
+        This example will set the service web to be blocked for the network
+    .EXAMPLE
+        PS C:\> Set-SCMrkFirewalledService -Id $Id -Service "ICMP" -Access "unrestricted"
+
+        This will set the service ICMP to be allowed by any remote IP addresses over the internet
+    .NOTES
+        Meraki API Docs: https://developer.cisco.com/meraki/api-v1/#!update-network-appliance-firewall-firewalled-service
+    #>
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$true, ValueFromPipelineByPropertyName=$true, ValueFromPipeline=$true)]
+        [ValidateNotNullOrEmpty()]
+        [String]$Id,
+        [Parameter(Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [String]$ApiKey = $ApiKey,
+        [Parameter(Mandatory=$true, HelpMessage="Can be either: ICMP, web or SNMP")]
+        [String]$Service,
+        [Parameter(Mandatory=$true, HelpMessage="Can be either: blocked, restricted, unrestricted")]
+        [ValidateSet("blocked","restricted","unrestricted")]
+        [String]$Access,
+        [Parameter(Mandatory=$false, HelpMessage="Array of IP addresses")]
+        [Array]$AllowedIPs
+    )
+    
+    Begin {
+        if($Access.ToLower() -eq "blocked"){
+            Write-Verbose -Message "Setting firewalled Service: $($Service), Access as: $($Access)"
+            $SwitchParameter = "blocked"
+        }
+        elseif($Access.ToLower() -eq "restricted"){
+            Write-Verbose -Message "Setting firewalled Service: $($Service), Access as: $($Access)"
+            if(!$AllowedIPs){
+                Write-Error -Message "You need to provide an array of IPs for the parameter -AllowedIPs"
+                Exit
+            }
+            $SwitchParameter = "restricted"
+        }
+        else {
+            Write-Verbose -Message "Setting firewalled Service: $($Service), Access as: $($Access)"
+            $SwitchParameter = "unrestricted"
+        }
+    }
+
+    Process {
+        Switch ($SwitchParameter){
+            "blocked" {
+                $payload = New-Object -TypeName psobject -Property @{
+                    "service"   = $Service
+                    "access"    = $Access
+                }
+            }
+
+            "restricted" {
+                $payload = New-Object -TypeName psobject -Property @{
+                    "service"       = $Service
+                    "access"        = $Access
+                    "allowedIps"    = $AllowedIPs
+                }
+            }
+
+            "unrestricted" {
+                $payload = New-Object -TypeName psobject -Property @{
+                    "service"   = $Service
+                    "access"    = $Access
+                }
+            }
+        }
+
+        if($payload){
+            Write-Verbose -Message "Payload was found. Initiating HTTP request"
+            try {
+                Write-Verbose -Message "Sending HTTP Request"
+                $result = Invoke-PRMerakiApiCall -Method PUT -Resource "/networks/$($Id)/appliance/firewall/firewalledServices/$($Service)" -ApiKey $ApiKey -Payload $Payload
+                return $result
+            }
+            catch {
+                Write-Error -Message "$($_)"
+            }
+        }
+    }
+
+    End {
+        if($result){
+            Write-Verbose -Message "Succussfully created SNMP firewall service"
+        }
+    }
+}
+Export-ModuleMember -Function Set-SCMrkFirewalledService
+#EndRegion - Set-SCMrkFirewalledService.ps1
 #Region - Set-SCMrkL3FirewallRule.ps1
 function Set-SCMrkL3FirewallRule {
     <#
@@ -1012,6 +1481,141 @@ function Set-SCMrkNetworkSNMP {
 }
 Export-ModuleMember -Function Set-SCMrkNetworkSNMP
 #EndRegion - Set-SCMrkNetworkSNMP.ps1
+#Region - Set-SCMrkSiteToSiteVPN.ps1
+function Set-SCMrkSiteToSiteVPN {
+    <#
+    .SYNOPSIS
+        Cmdlet for configuring Site To Site on a network
+    .DESCRIPTION
+        Cmdlet which lets you configure Site To Site as either Spoke or Hub, or disable Site
+        To Site completely.
+
+        If a network is configured as a Spoke and you just want to set a subnet to be available on the VPN
+        you should just run the command as configuring a spoke with that specific subnet
+    .EXAMPLE
+        PS C:\> Set-SCMrkSiteToSiteVPN -Id $id -HubId "L_6711231278931634675" -LocalSubnet "192.168.2.0/24" -UseVPN $true -Mode "spoke"
+        
+        This example will configure the Site To Site as a spoke connecting to the Hub: L_6711231278931634675 and Configuring the local subnet
+        192.168.2.0/24 to be allowed on the VPN.
+    .EXAMPLE
+        PS C:\> Set-SCMrkSiteToSiteVPN -Id $id -Mode "hub"
+
+        This example will configure the Site To Site as a Hub
+    .NOTES
+        Meraki API Docs: https://developer.cisco.com/meraki/api-v1/#!update-network-appliance-vpn-site-to-site-vpn
+    #>
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$true, ValueFromPipelineByPropertyName=$true, ValueFromPipeline=$true)]
+        [ValidateNotNullOrEmpty()]
+        [String]$Id,
+        [Parameter(Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [String]$ApiKey = $ApiKey,
+        [Parameter(Mandatory=$true, HelpMessage="Can be none, spoke or hub")]
+        [ValidateSet("none","spoke","hub")]
+        [String]$Mode,
+        [Parameter(Mandatory=$false)]
+        [String]$HubId,
+        [Parameter(Mandatory=$false)]
+        [Boolean]$UseDefaultRoute = $false,
+        [Parameter(Mandatory=$false)]
+        [String]$LocalSubnet,
+        [Parameter(Mandatory=$false)]
+        [Boolean]$UseVPN = $false
+    )
+
+    Begin {
+        if($Mode.ToLower() -eq "none"){
+            Write-Verbose -Message "Removing Site To Site VPN Configurations"
+            $SwitchParameter = "none"
+        }
+        elseif($Mode.ToLower() -eq "spoke"){
+            if(!$HubId){
+                Write-Error -Message "Parameter -HubId needs to be set to configure Site To Site VPN as Spoke"
+                Exit
+            }
+            elseif(!$LocalSubnet){
+                Write-Error -Message "Parameter -LocalSubnet needs to be set to configure Site To Site VPN as Spoke"
+            }
+            else {
+                Write-Verbose -Message "Configuring Site To Site as Spoke"
+                $SwitchParameter = "spoke"
+            }
+        }
+        else {
+            Write-Verbose -Message "Configuring Site To Site as Hub"
+            $SwitchParameter = "hub"
+        }
+    }
+
+    Process {
+        Switch($SwitchParameter){
+            "none" {
+                $payload = New-Object -TypeName psobject -Property @{
+                    "mode"      = $Mode
+                    "hubs"      = @()
+                    "subnets"   = @()
+                }
+            }
+
+            "spoke" {
+                # Configuring Hub Object
+                $hub = New-Object -TypeName System.Collections.ArrayList
+                $hubObject = New-Object -TypeName psobject -Property @{
+                    "hubId" = $HubId
+                    "useDefaultRoute" = $UseDefaultRoute
+                }
+                $null = $hub.Add($hubObject)
+
+                # Configuring Subnet Object
+                $subnet = New-Object -TypeName System.Collections.ArrayList
+                $subnetObject = New-Object -TypeName psobject -Property @{
+                    "localSubnet" = $LocalSubnet
+                    "useVpn" = $UseVPN
+                }
+                $null = $subnet.Add($subnetObject)
+
+                # Configuring payload for HTTP request
+                $payload = New-Object -TypeName psobject -Property @{
+                    "mode"      = $Mode
+                    "hubs"      = $hub
+                    "subnets"   = $subnet
+                }
+            }
+
+            "hub" {
+                $payload = New-Object -TypeName psobject -Property @{
+                    "mode"      = $Mode
+                    "hubs"      = @()
+                    "subnets"   = @()
+                }
+            }
+        }
+
+        if($payload){
+            Write-Verbose -Message "Payload was found. Initiating HTTP request"
+            Write-Output -InputObject ($payload | convertTo-Json)
+            try {
+                Write-Verbose -Message "Sending HTTP Request"
+                $result = Invoke-PRMerakiApiCall -Method PUT -Resource "/networks/$($Id)/appliance/vpn/siteToSiteVpn" -ApiKey $ApiKey -Payload $Payload
+                return $result
+            }
+            catch {
+                Write-Error -Message "$($_)"
+            }
+        }
+    }
+
+    End {
+        if($result){
+            Write-Verbose -Message "Succussfully set Site To Site VPN"
+        }
+    }
+}
+Export-ModuleMember -Function Set-SCMrkSiteToSiteVPN
+#EndRegion - Set-SCMrkSiteToSiteVPN.ps1
 #Region - Set-SCMrkSwitchPort.ps1
 function Set-SCMrkSwitchPort {
     <#

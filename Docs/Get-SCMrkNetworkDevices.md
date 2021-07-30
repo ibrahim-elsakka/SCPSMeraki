@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Get-SCMrkDevices
+# Get-SCMrkNetworkDevices
 
 ## SYNOPSIS
 Cmdlet for retrieving all (meraki)devices on a network
@@ -13,7 +13,7 @@ Cmdlet for retrieving all (meraki)devices on a network
 ## SYNTAX
 
 ```
-Get-SCMrkDevices [-Id] <String> [[-ApiKey] <String>] [<CommonParameters>]
+Get-SCMrkNetworkDevices [-Id] <String> [[-ApiKey] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -32,7 +32,7 @@ provided the in the parameter Id.
 
 ### EXAMPLE 2
 ```
-(Get-SCMrkNetworks | ? Name -eq "Network1").Id | Get-SCMrkDevices
+(Get-SCMrkNetworks | ? Name -eq "Network1").Id | Get-SCMrkNetworkDevices
 ```
 
 This example will grap the id of the network with name "Network1" through the pipeline and
