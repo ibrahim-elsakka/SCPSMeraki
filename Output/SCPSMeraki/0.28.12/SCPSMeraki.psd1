@@ -12,7 +12,7 @@
 RootModule = 'SCPSMeraki.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.25.11'
+ModuleVersion = '0.28.12'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -75,7 +75,8 @@ FunctionsToExport = 'Get-SCMrkAppliancePort', 'Get-SCMrkAppliancePorts',
                'Get-SCMrkL3FirewallRules', 'Get-SCMrkNetworkDevices', 
                'Get-SCMrkNetworks', 'Get-SCMrkNetworkSNMP', 'Get-SCMrkNetworkVlans', 
                'Get-SCMrkSiteToSiteVPN', 'Get-SCMrkSwitchPort', 
-               'Get-SCMrkSwitchPorts', 'Set-SCMrkAppliancePort', 'Set-SCMrkAuth', 
+               'Get-SCMrkSwitchPorts', 'Get-SCMrkVlan', 'Get-SCMrkVlans', 
+               'New-SCMrkVlan', 'Set-SCMrkAppliancePort', 'Set-SCMrkAuth', 
                'Set-SCMrkFirewalledService', 'Set-SCMrkL3FirewallRule', 
                'Set-SCMrkNetworkSNMP', 'Set-SCMrkSiteToSiteVPN', 
                'Set-SCMrkSwitchPort'

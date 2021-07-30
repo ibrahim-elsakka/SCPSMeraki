@@ -888,6 +888,189 @@ function Get-SCMrkSwitchPorts {
 }
 Export-ModuleMember -Function Get-SCMrkSwitchPorts
 #EndRegion - Get-SCMrkSwitchPorts.ps1
+#Region - Get-SCMrkVlan.ps1
+function Get-SCMrkVlan {
+    <#
+    .SYNOPSIS
+        Short description
+    .DESCRIPTION
+        Long description
+    .EXAMPLE
+        PS C:\> <example usage>
+        Explanation of what the example does
+    .INPUTS
+        Inputs (if any)
+    .OUTPUTS
+        Output (if any)
+    .NOTES
+        General notes
+    #>
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$true, ValueFromPipelineByPropertyName=$true, ValueFromPipeline=$true)]
+        [ValidateNotNullOrEmpty()]
+        [String]$Id,
+        [Parameter(Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [String]$ApiKey = $ApiKey,
+        [Parameter(Mandatory=$true)]
+        [String]$VlanId
+    )
+
+    begin {
+        Write-Verbose -Message "Querying Meraki API Vlan: $($VlanId) in Network: $($Id)"
+    }
+    
+    process {
+        try {
+            Write-Verbose -Message "Retrieving Meraki Vlan config for vlan: $($VlanId)"
+            $result = Invoke-PRMerakiApiCall -Method GET -Resource "/networks/$($Id)/appliance/vlans/$($VlanId)" -ApiKey $ApiKey
+            Write-Output -InputObject $result
+        }
+        catch {
+            $statusCode = $_.Exception.Response.StatusCode.value__
+            $statusDescription = $_.Exception.Response.StatusDescription
+        }
+    }
+    
+    end {
+        if($statusCode){
+            Write-Error -Message "Status code: $($statusCode), Error Description: $($statusDescription)"
+        }
+    }
+}
+Export-ModuleMember -Function Get-SCMrkVlan
+#EndRegion - Get-SCMrkVlan.ps1
+#Region - Get-SCMrkVlans.ps1
+function Get-SCMrkVlans {
+    <#
+    .SYNOPSIS
+        Short description
+    .DESCRIPTION
+        Long description
+    .EXAMPLE
+        PS C:\> <example usage>
+        Explanation of what the example does
+    .INPUTS
+        Inputs (if any)
+    .OUTPUTS
+        Output (if any)
+    .NOTES
+        General notes
+    #>
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$true, ValueFromPipelineByPropertyName=$true, ValueFromPipeline=$true)]
+        [ValidateNotNullOrEmpty()]
+        [String]$Id,
+        [Parameter(Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [String]$ApiKey = $ApiKey
+    )
+
+    begin {
+        Write-Verbose -Message "Querying Meraki API for the Vlans in Network: $($Id)"
+    }
+    
+    process {
+        try {
+            Write-Verbose -Message "Retrieving Meraki Vlan config for network: $($Id)"
+            $result = Invoke-PRMerakiApiCall -Method GET -Resource "/networks/$($Id)/appliance/vlans" -ApiKey $ApiKey
+            Write-Output -InputObject $result
+        }
+        catch {
+            $statusCode = $_.Exception.Response.StatusCode.value__
+            $statusDescription = $_.Exception.Response.StatusDescription
+        }
+    }
+    
+    end {
+        if($statusCode){
+            Write-Error -Message "Status code: $($statusCode), Error Description: $($statusDescription)"
+        }
+    }
+}
+Export-ModuleMember -Function Get-SCMrkVlans
+#EndRegion - Get-SCMrkVlans.ps1
+#Region - New-SCMrkVlan.ps1
+function New-SCMrkVlan {
+    <#
+    .SYNOPSIS
+        Short description
+    .DESCRIPTION
+        Long description
+    .EXAMPLE
+        PS C:\> <example usage>
+        Explanation of what the example does
+    .INPUTS
+        Inputs (if any)
+    .OUTPUTS
+        Output (if any)
+    .NOTES
+        General notes
+    #>
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$true, ValueFromPipelineByPropertyName=$true, ValueFromPipeline=$true)]
+        [ValidateNotNullOrEmpty()]
+        [String]$Id,
+        [Parameter(Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [String]$ApiKey = $ApiKey,
+        [Parameter(Mandatory=$true, HelpMessage="The Ipaddress of the MX Appliance")]
+        [String]$DefaultGateway,
+        [Parameter(Mandatory=$false)]
+        [String]$GroupPolicyId,
+        [Parameter(Mandatory=$true, HelpMessage="The number ID of the VLAN")]
+        [String]$VlanId,
+        [Parameter(Mandatory=$true, HelpMessage="The name of the VLAN")]
+        [String]$Name,
+        [Parameter(Mandatory=$true, HelpMessage="The subnet of the VLAN")]
+        [String]$Subnet
+    )
+
+    Begin {
+        Write-Verbose -Message "The VLAN: $($Name), with ID: $($VlanId) will be created"
+        Write-Verbose -Message "Creating with subnet: $($Subnet), and Default Gateway: $($DefaultGateway)"
+    }
+
+    Process {
+        $payload = New-Object -TypeName psobject -Property @{
+            "id"                = $VlanId
+            "name"              = $Name
+            "subnet"            = $Subnet
+            "applianceIp"       = $DefaultGateway
+            "groupPolicyId"     = $GroupPolicyId
+        }
+        if(!$GroupPolicyId){
+            $payload = $payload | Select-Object -ExcludeProperty groupPolicyId
+        }
+
+        try {
+            $result = Invoke-PRMerakiApiCall -Method POST -Resource "/networks/$($Id)/appliance/vlans" -ApiKey $ApiKey -Payload $payload
+        }
+        catch {
+            Write-Error -Message "$($_)"
+        }
+    }
+
+    End {
+        if($result){
+            try {
+                $request =  Invoke-PRMerakiApiCall -Method GET -Resource "/networks/$($Id)/appliance/vlans/$($VlanId)" -ApiKey $ApiKey
+                return $request
+            }
+            catch {
+                Write-Error -Message "$($_)"
+            }
+        }
+    }
+}
+Export-ModuleMember -Function New-SCMrkVlan
+#EndRegion - New-SCMrkVlan.ps1
 #Region - Set-SCMrkAppliancePort.ps1
 function Set-SCMrkAppliancePort {
     <#
