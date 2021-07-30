@@ -592,7 +592,7 @@ function Get-SCMrkNetworks {
         }
     }
 }
-Export-ModuleMember -Function Get-SCMrkNetworks
+Export-ModuleMember -Function Get-SCMrkNetworks -Alias 'scgn'
 #EndRegion - Get-SCMrkNetworks.ps1
 #Region - Get-SCMrkNetworkSNMP.ps1
 function Get-SCMrkNetworkSNMP {
