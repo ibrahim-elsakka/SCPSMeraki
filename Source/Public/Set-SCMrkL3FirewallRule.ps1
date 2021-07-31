@@ -94,6 +94,15 @@ function Set-SCMrkL3FirewallRule {
                 Write-Verbose -Message "Rule policy: $($rule.policy)"
                 Write-Verbose -Message "-----------------------------"
             }
+            $rArray = New-Object -TypeName System.Collections.ArrayList
+            foreach($rule in $OldRulesObject.rules){
+                if(!($rule.comment -eq "Default rule")){
+                    $null = $rArray.Add($rule)
+                }
+            }
+            $OldRulesObject = New-Object -TypeName psobject -Property @{
+                "rules" = $rArray
+            }
         }
 
         Write-Verbose -Message "Passing old rules and new rules to process the new complete firewall rule list"
